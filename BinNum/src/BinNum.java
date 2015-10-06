@@ -5,13 +5,11 @@ deal with negative integers.
 
 public class BinNum {
     private boolean[] bits;
-    private static final int[] bitMask = new int[] {128,64,32,16,8,4,2,1};;
-
-
+    private int number;
+    private static final int[] bitMask = new int[] {128,64,32,16,8,4,2,1};
 
     BinNum(int n) {
         bits = new boolean[8];
-
         if (n >= 0)
         {
             bits = toBinaryArray(n, bitMask);
@@ -40,12 +38,10 @@ public class BinNum {
         boolean carryBit = false;
 
         for (int i = 7; i >= 0; i--) {
-
             newBits[i] = firstBits[i] ^ secondBits[i] ^ carryBit;
             carryBit = ((firstBits[i] || secondBits[i]) && carryBit)
                     || ((firstBits[i] && secondBits[i]) && !carryBit);
         }
-
         BinNum newBinNum = new BinNum(0);
         newBinNum.bits = newBits;
         return newBinNum;
@@ -69,16 +65,18 @@ public class BinNum {
     }
 
     public void displayNum() {
-        System.out.print(getInt());
-    }
-
-    private int getInt() {
-        int sum;
         if (bits[0]) {
-            boolean[] negatedBits = negate(bits);
-            return -sumBits(negatedBits) - 1;
+            BinNum temporaryBinNum = new BinNum(0);
+            temporaryBinNum.bits = bits;
+            temporaryBinNum.negate();
+            temporaryBinNum = add(temporaryBinNum, new BinNum(1));
+            int sum = sumBits(temporaryBinNum.bits);
+            System.out.print("-" + sum);
+        } else {
+            int sum = sumBits(bits);
+            System.out.print(sum);
         }
-        return sumBits(bits);
+
     }
 
     private int sumBits(boolean[] givenBits) {
@@ -103,6 +101,8 @@ public class BinNum {
     private static void DisplayMessageWithBinNum(String message, BinNum binNum) {
         System.out.print(message);
         binNum.displayNum();
+        System.out.print(" - ");
+        binNum.displayByteNum();
         System.out.println();
     }
 
@@ -117,8 +117,11 @@ public class BinNum {
     }
 
     private static void DisplayBinNumTableFrom(int lowerBound, int upperBound) {
-        System.out.println("\n Bits\t\t| Int\n------------------");
-        for (int i = lowerBound; i < upperBound; i++) {
+        System.out.println("Table:");
+        System.out.println(" Bits\t\t| Int");
+        System.out.println("------------------");
+
+        for (int i = lowerBound; i <= upperBound; i++) {
             BinNum num = new BinNum(i);
             num.displayByteNum();
             System.out.print("\t| ");

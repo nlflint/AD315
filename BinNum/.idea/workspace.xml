@@ -45,11 +45,11 @@
       <file leaf-file-name="BinNum.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/BinNum.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.29566854" vertical-offset="1390" max-vertical-offset="2312">
-              <caret line="96" column="51" selection-start-line="96" selection-start-column="51" selection-end-line="96" selection-end-column="51" />
+            <state vertical-scroll-proportion="0.6629002" vertical-offset="1568" max-vertical-offset="2256">
+              <caret line="123" column="37" selection-start-line="123" selection-start-column="37" selection-end-line="123" selection-end-column="37" />
               <folding>
-                <element signature="e#1913#1914#0" expanded="true" />
-                <element signature="e#1955#1956#0" expanded="true" />
+                <element signature="e#1520#1521#0" expanded="true" />
+                <element signature="e#1555#1556#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -595,11 +595,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BinNum.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.29566854" vertical-offset="1390" max-vertical-offset="2312">
-          <caret line="96" column="51" selection-start-line="96" selection-start-column="51" selection-end-line="96" selection-end-column="51" />
+        <state vertical-scroll-proportion="0.6629002" vertical-offset="1568" max-vertical-offset="2256">
+          <caret line="123" column="37" selection-start-line="123" selection-start-column="37" selection-end-line="123" selection-end-column="37" />
           <folding>
-            <element signature="e#1913#1914#0" expanded="true" />
-            <element signature="e#1955#1956#0" expanded="true" />
+            <element signature="e#1520#1521#0" expanded="true" />
+            <element signature="e#1555#1556#0" expanded="true" />
           </folding>
         </state>
       </provider>
