@@ -9,20 +9,19 @@ public class BinNum {
     private static final int[] bitMask = new int[] {128,64,32,16,8,4,2,1};
 
     BinNum(int n) {
-        bits = new boolean[8];
-        if (n >= 0)
-        {
-            bits = toBinaryArray(n, bitMask);
+        if (n >= 0) {
+            bits = toBinaryArray(n);
         } else {
-            bits = negate(toBinaryArray(-n, bitMask));
+            bits = toBinaryArray(-n);
+            negate();
             bits = add(this, new BinNum(1)).bits;
         }
     }
 
-    private boolean[] toBinaryArray(int n, int[] maskingBits) {
+    private boolean[] toBinaryArray(int n) {
         boolean[] binaryArray = new boolean[8];
         for (int i = 0; i < 8; i++) {
-            int mask = maskingBits[i];
+            int mask = bitMask[i];
             if (n - mask >= 0){
                 binaryArray[i] = true;
                 n = n - mask;
@@ -48,15 +47,9 @@ public class BinNum {
     }
 
     public void negate() {
-        bits = negate(bits);
-    }
-
-    private static boolean[] negate(boolean[] givenBits) {
-        boolean[] newBits = new boolean[8];
         for (int i = 0; i < 8; i++) {
-            newBits[i] = !givenBits[i];
+            bits[i] = !bits[i];
         }
-        return newBits;
     }
 
     public void displayByteNum() {
@@ -67,7 +60,7 @@ public class BinNum {
     public void displayNum() {
         if (bits[0]) {
             BinNum temporaryBinNum = new BinNum(0);
-            temporaryBinNum.bits = bits;
+            temporaryBinNum.bits = bits.clone();
             temporaryBinNum.negate();
             temporaryBinNum = add(temporaryBinNum, new BinNum(1));
             int sum = sumBits(temporaryBinNum.bits);
