@@ -5,8 +5,6 @@ deal with negative integers.
 
 public class BinNum {
     private boolean[] bits;
-    private int number;
-    private static final int[] bitMask = new int[] {128,64,32,16,8,4,2,1};
 
     BinNum(int n) {
         if (n >= 0) {
@@ -18,16 +16,26 @@ public class BinNum {
         }
     }
 
+    public void negate() {
+        for (int i = 0; i < 8; i++) {
+            bits[i] = !bits[i];
+        }
+    }
+
     private boolean[] toBinaryArray(int n) {
         boolean[] binaryArray = new boolean[8];
         for (int i = 0; i < 8; i++) {
-            int mask = bitMask[i];
-            if (n - mask >= 0){
+            int bitValue = decimalValueAtBitsIndex(i);
+            if (n - bitValue >= 0){
                 binaryArray[i] = true;
-                n = n - mask;
+                n = n - bitValue;
             }
         }
         return binaryArray;
+    }
+
+    private int decimalValueAtBitsIndex(int i) {
+        return (int) Math.pow(2, 7 - i);
     }
 
     public static BinNum add(BinNum first, BinNum second) {
@@ -46,37 +54,36 @@ public class BinNum {
         return newBinNum;
     }
 
-    public void negate() {
-        for (int i = 0; i < 8; i++) {
-            bits[i] = !bits[i];
-        }
-    }
-
     public void displayByteNum() {
         for (boolean bit : bits)
             System.out.print(bit ? "1" : "0");
     }
 
     public void displayNum() {
-        if (bits[0]) {
-            BinNum temporaryBinNum = new BinNum(0);
-            temporaryBinNum.bits = bits.clone();
-            temporaryBinNum.negate();
-            temporaryBinNum = add(temporaryBinNum, new BinNum(1));
-            int sum = sumBits(temporaryBinNum.bits);
-            System.out.print("-" + sum);
-        } else {
-            int sum = sumBits(bits);
-            System.out.print(sum);
-        }
-
+        System.out.print(getDecimalValue());
     }
 
-    private int sumBits(boolean[] givenBits) {
+    public int getDecimalValue() {
+        if (bits[0]) {
+            BinNum temporaryBinNum = clone();
+            temporaryBinNum = add(temporaryBinNum, new BinNum(-1));
+            temporaryBinNum.negate();
+            return -sumBits(temporaryBinNum.bits);
+        }
+        return sumBits(bits);
+    }
+
+    protected BinNum clone() {
+        BinNum clone = new BinNum(0);
+        clone.bits = bits.clone();
+        return clone;
+    }
+
+    private int sumBits(boolean[] bits) {
         int sum = 0;
-        for(int i = 1; i < 8; i++)
-            if (givenBits[i])
-                sum += bitMask[i];
+        for(int i = 0; i < 8; i++)
+            if (bits[i])
+                sum += decimalValueAtBitsIndex(i);
         return sum;
     }
 
@@ -110,6 +117,7 @@ public class BinNum {
     }
 
     private static void DisplayBinNumTableFrom(int lowerBound, int upperBound) {
+        System.out.println();
         System.out.println("Table:");
         System.out.println(" Bits\t\t| Int");
         System.out.println("------------------");
@@ -121,6 +129,14 @@ public class BinNum {
             num.displayNum();
             System.out.println();
         }
+    }
+
+    protected boolean[] getBits(){
+        return bits;
+    }
+
+    protected void setBits(boolean[] newBits){
+        bits = newBits;
     }
 }
 
