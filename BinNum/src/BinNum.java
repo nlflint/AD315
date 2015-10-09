@@ -25,32 +25,34 @@ public class BinNum {
     private boolean[] toBinaryArray(int n) {
         boolean[] binaryArray = new boolean[8];
         for (int i = 0; i < 8; i++) {
-            int bitValue = decimalValueAtBitsIndex(i);
-            if (n - bitValue >= 0){
+            int bitDecimalValue = calculateDecimalValueForBitIndex(i);
+            if (n - bitDecimalValue >= 0){
                 binaryArray[i] = true;
-                n = n - bitValue;
+                n = n - bitDecimalValue;
             }
         }
         return binaryArray;
     }
 
-    private int decimalValueAtBitsIndex(int i) {
+    private int calculateDecimalValueForBitIndex(int i) {
         return (int) Math.pow(2, 7 - i);
     }
 
     public static BinNum add(BinNum first, BinNum second) {
-        boolean[] newBits = new boolean[8];
-        boolean[] firstBits = first.bits;
-        boolean[] secondBits = second.bits;
+        boolean[] answerBits = new boolean[8];
         boolean carryBit = false;
 
         for (int i = 7; i >= 0; i--) {
-            newBits[i] = firstBits[i] ^ secondBits[i] ^ carryBit;
-            carryBit = ((firstBits[i] || secondBits[i]) && carryBit)
-                    || ((firstBits[i] && secondBits[i]) && !carryBit);
+            boolean top = first.bits[i];
+            boolean bottom = second.bits[i];
+            answerBits[i] = top ^ bottom ^ carryBit;
+            carryBit =
+                    (top && bottom) ||
+                    (top && carryBit) ||
+                    (bottom && carryBit);
         }
         BinNum newBinNum = new BinNum(0);
-        newBinNum.bits = newBits;
+        newBinNum.bits = answerBits;
         return newBinNum;
     }
 
@@ -83,7 +85,7 @@ public class BinNum {
         int sum = 0;
         for(int i = 0; i < 8; i++)
             if (bits[i])
-                sum += decimalValueAtBitsIndex(i);
+                sum += calculateDecimalValueForBitIndex(i);
         return sum;
     }
 
@@ -129,10 +131,6 @@ public class BinNum {
             num.displayNum();
             System.out.println();
         }
-    }
-
-    protected boolean[] getBits(){
-        return bits;
     }
 
     protected void setBits(boolean[] newBits){
