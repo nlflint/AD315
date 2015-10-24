@@ -48,4 +48,29 @@ public class IntegrateTests {
         assertEquals(139.2690540937500, actualResult, tolerance);
     }
 
+    @Test
+    public void HomeworkHelper() {
+        for (int i = 1; i <= 10000000; i *= 10 ) {
+            double lowerBound = 0.002 * i;
+            double upperBound = 0.005 * i;
+            System.out.println(String.format("(%s,%s)", lowerBound, upperBound));
+            RunWithBounds(lowerBound, upperBound);
+        }
+    }
+
+    private void RunWithBounds(double lowerBound, double upperBound) {
+        for (int i = 10; i <= 10000; i *= 10) {
+            double approximation = Integrate("l", lowerBound, upperBound, i);
+            double actualValue = Integrate.getActualValue(lowerBound, upperBound);
+            double absoluteError = Integrate.getAbsoluteError(approximation, actualValue);
+            double relativeError = Integrate.getRelativeError(actualValue,absoluteError);
+
+            System.out.println(String.format("%d Rects: %s", i, approximation));
+            System.out.println(String.format("Absolute: %s", absoluteError));
+            System.out.println(String.format("Relative: %s\n", relativeError));
+        }
+
+
+    }
+
 }

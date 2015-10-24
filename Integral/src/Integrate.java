@@ -1,12 +1,10 @@
-/* Program to approximate the value of 
+import java.util.stream.IntStream;
+
+/* Program to approximate the value of
  * a definite integral. User will pass
  * an interval, number of approximating 
  * rectangles, and method of integration
  */
-
-
-import java.util.stream.IntStream;
-
 public class Integrate {
     public final double ApproximateValue;
 
@@ -31,7 +29,7 @@ public class Integrate {
 
     // method to evaluate a function
     private double evaluate(double x) {
-        return Math.pow(x,2);
+        return Math.pow(x, 2);
     }
 
     // the main method
@@ -55,22 +53,33 @@ public class Integrate {
         double actualValue = getActualValue(lowerBound, upperBound);
         System.out.println(String.format("Actual value: %s", actualValue));
 
-        double absoluteError = Math.abs(integrator.ApproximateValue - actualValue);
+        double absoluteError = getAbsoluteError(integrator.ApproximateValue, actualValue);
         System.out.println(String.format("Absolute error: %s", absoluteError));
 
-        double relativeError = absoluteError / Math.abs(actualValue);
+        double relativeError = getRelativeError(actualValue, absoluteError);
         System.out.println(String.format("Relative error: %s", relativeError));
     }
 
-    private static String getApproximationMethodName(String approximationMethod) {
-        if (approximationMethod.equals("l"))
-            return "left handed";
-        if (approximationMethod.equals("r"))
-            return "right handed";
-        return "trapezoid";
+    public static double getRelativeError(double actualValue, double absoluteError) {
+        return absoluteError / Math.abs(actualValue);
     }
 
-    private static double getActualValue(double lowerBound, double upperBound) {
+    public static double getAbsoluteError(double approximateValue, double actualValue) {
+        return Math.abs(approximateValue - actualValue);
+    }
+
+    private static String getApproximationMethodName(String approximationMethod) {
+        switch(approximationMethod) {
+            case "l":
+                return "left handed";
+            case "r":
+                return "right handed";
+            default:
+                return "trapezoid";
+        }
+    }
+
+    public static double getActualValue(double lowerBound, double upperBound) {
         return (Math.pow(upperBound,3) / 3) - (Math.pow(lowerBound,3) / 3);
     }
 
@@ -89,8 +98,6 @@ public class Integrate {
             Delta = (b - a) / n;
             LowerBound = a;
             UpperBound = a + (n * Delta);
-
-
         }
     }
 }
