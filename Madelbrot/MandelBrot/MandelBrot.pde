@@ -33,7 +33,7 @@ int infinity;
 
 void setup() {
   // be sure to fill in the size method
-  size(500,500);
+  size(160,100);
   // HSB stands for hue, saturation, and brightness
   colorMode(HSB);
   // we are only writing to the display window once
@@ -46,7 +46,7 @@ void setup() {
   
   // here we decide what our discrete
   // infinity will be
-  infinity = 12;
+  infinity = 144;
   
   // initialize the viewing window
   xmin = -3.2;
@@ -63,22 +63,24 @@ void draw() {
   // to use the pixels[] array you need to first 
   // call the loadpixels() method
   loadPixels();
-  
+
   for (int i = 0; i < width; i++) {
     for (int j = 0; j < height; j++) {
       // a and b represent the current value of c
       // which depends on i and j. Here c = a + bi
-      a = i * dx;
-      b = j * dy;
+      
+      a = xmin + (i * dx);
+      b = ymin + (i * dy);
         
       // determine whether the sequence is bounded
-      // at the current value of c
-      //iterationCount = checkBounded(a,b);
+      // at the current value of c //<>//
+      iterationCount = checkBounded(a,b);
         
       // write a color to the pixels[] array based
       // on iterationCount
-      //c = color(iterationCount, 0,0);
-      //pixels[i*j] = c;
+      c = color(iterationCount, 0,0);
+      int pixelIndex = (height * i) + j;
+      pixels[pixelIndex] = c; //<>//
     }
   }
   
@@ -92,20 +94,24 @@ void draw() {
 int checkBounded(double x, double y) {
   // result is used to determine if a sequence
   // is bounded for a given value of c
-  int result;
+  double result;
   
   // temporary variables used for computation
-  double x1;
-  double y1;
+  double x1 = 0;
+  double y1 = 0;
   
-  double x2;
-  double y2;
+  double x2 = 0;
+  double y2 = 0;
   
   // this loop will check if the sequence
-  // is bounded for the particular value hof c
+  // is bounded for the particular value of c
   for (int i = 0; i < iterations; i++) {
-    //x1 = pow(x1,2) - pow(y1,2) + x;
-    result = 1;
+    x2 = sqr(x1) - sqr(y1) + x;
+    y2 = (2 * x1 * y1) + y;
+    result = sqr(x2) + sqr(y2);
+    
+    x1 = x2;
+    y1 = y2;
     
     // if result is larger than our discrete infinity
     // return the number of iterations it took to get
@@ -120,4 +126,8 @@ int checkBounded(double x, double y) {
   // sequence is bounded for the particular
   // value of c and return 0 as a result.
   return 0;
+}
+
+double sqr(double x) {
+  return x * x;
 }
