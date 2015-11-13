@@ -66,42 +66,45 @@ void draw() {
   dy = (ymax - ymin) / height;
 
   for (int i = 0; i < width; i++) {
-   for (int j = 0; j < height; j++) {
-     // a and b represent the current value of c
-     // which depends on i and j. Here c = a + bi
-     a = xmin + (i * dx);
-     b = ymin + (j * dy);
-        
-     // determine whether the sequence is bounded
-     // at the current value of c //<>//
-     iterationCount = checkBounded(a,b);
-        
-     // write a color to the pixels[] array based
-     // on iterationCount 
-     c = color(255 - iterationCount * 7, iterationCount * 16, iterationCount * 12);
-     pixels[(j * width) + i] = c;
-   }
+    for (int j = 0; j < height; j++) {
+      // a and b represent the current value of c
+      // which depends on i and j. Here c = a + bi
+      a = xmin + (i * dx);
+      b = ymin + (j * dy);
+      
+      // determine whether the sequence is bounded
+      // at the current value of c //<>//
+      iterationCount = checkBounded(a,b);
+       
+      // write a color to the pixels[] array based
+      // on iterationCount 
+      c = color(255 - iterationCount * 7, iterationCount * 16, iterationCount * 12);
+      pixels[(j * width) + i] = c;
+    }
   }
+  
   // you need to call updatePixels() to display
   // the colors stored in the pixels[] array.
   updatePixels();
 }
 
-// method to check if the sequence is bounded. x 
-// is the real part of c, and y is the imaginary part.
+// method to check if the sequence is bounded. OriginalReal 
+// is the real part of c, and originalImaginary is the imaginary part.
 int checkBounded(double originalReal, double originalImaginary) {
   // result is used to determine if a sequence
   // is bounded for a given value of c
   double result;
   
-  // temporary variables used for computation
-  double currentReal = originalReal;
-  double currentImaginary = originalImaginary;
+  // Variables used for working with computation
+  double workingReal = originalReal;
+  double workingImaginary = originalImaginary;
   
   // this loop will check if the sequence
   // is bounded for the particular value of c
   for (int i = 0; i < iterations; i++) {
-    result = square(currentReal) + square(currentImaginary);
+    // 'measure' the distance
+    result = square(workingReal) + square(workingImaginary);
+    
     // if result is larger than our discrete infinity
     // return the number of iterations it took to get
     // to the discrete infinity
@@ -109,10 +112,11 @@ int checkBounded(double originalReal, double originalImaginary) {
       return i;
     }
     
-    double workingReal = square(currentReal) - square(currentImaginary) + originalReal;
-    double workingImaginary = (2.0 * currentReal * currentImaginary) + originalImaginary;
-    currentReal = workingReal;
-    currentImaginary = workingImaginary;
+    // Compute the next complex number
+    double tempReal = square(workingReal) - square(workingImaginary) + originalReal;
+    workingImaginary = (2.0 * workingReal * workingImaginary) + originalImaginary;
+    workingReal = tempReal;
+
   }
   
   // once we've ran through the specified //<>//
@@ -122,37 +126,47 @@ int checkBounded(double originalReal, double originalImaginary) {
   return 0;
 }
 
-//
+// squares given number
 double square(double x) {
   return x * x;
 }
 
+// Handle keyboard input
 void keyPressed() {
+  // Precalculate 2% change for zooming and moving
   double xDelta = (xmax - xmin) * 0.02;
   double yDelta = (ymax - ymin) * 0.02;
   
   if (keyCode == RIGHT) {
+    //Move view to the right
     xmax += xDelta;
     xmin += xDelta;
   } else if (keyCode == LEFT) {
+    //Move view to the left
     xmax -= xDelta;
     xmin -= xDelta;
   } else if (keyCode == UP) {
+    //Move view up
     ymax -= yDelta;
     ymin -= yDelta;
   } else if (keyCode == DOWN) {
+    //Move view down
     ymax += yDelta;
     ymin += yDelta;
   } else if (key == '=') {
+    // Zoom-in view
     ymax -= yDelta; //<>//
     ymin += yDelta;
     xmax -= xDelta;
     xmin += xDelta;
   } else if (key == '-') {
+    // Zoom-out view
     ymax += yDelta;
     ymin -= yDelta;
     xmax += xDelta;
     xmin -= xDelta;
   }
+  
+  //Draw the new view
   draw();
 }
