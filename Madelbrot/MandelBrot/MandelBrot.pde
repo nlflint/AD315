@@ -37,7 +37,7 @@ void setup() {
   // HSB stands for hue, saturation, and brightness
   colorMode(HSB);
   // we are only writing to the display window once
-  noLoop();
+  //noLoop();
   // initialize the background.
   background(255);
   
@@ -53,14 +53,44 @@ void setup() {
   xmax = 1.6;
   ymin = -1.35;
   ymax = 1.35;
+  
+  noFill();
+  stroke(255);
+  rectMode(CORNERS);
+  
+  fractalViewValid = false;
+  
+  fractalPixels = new int[width * height];
 }
 
 void draw() {
+  
+  
   // to use the pixels[] array you need to first 
   // call the loadpixels() method
   loadPixels();
   
-  // dx and dy should be defined using the 
+  if (!fractalViewValid) {
+    updateFractal();  
+    fractalViewValid = true; 
+  }
+  
+  for (int i = 0; i < fractalPixels.length; i++) {
+    pixels[i] = fractalPixels[i];
+  }
+  
+  // you need to call updatePixels() to display
+  // the colors stored in the pixels[] array.
+  updatePixels();
+  
+  if (drawBox) {
+    rect(mouseStartX, mouseStartY, mouseEndX, mouseEndY);
+  }
+}
+
+int[] fractalPixels;
+void updateFractal() {
+// dx and dy should be defined using the 
   // height and width keywords. 
   dx = (xmax - xmin) / width;
   dy = (ymax - ymin) / height;
@@ -73,19 +103,15 @@ void draw() {
       b = ymin + (j * dy);
       
       // determine whether the sequence is bounded
-      // at the current value of c //<>//
+      // at the current value of c
       iterationCount = checkBounded(a,b);
        
       // write a color to the pixels[] array based
       // on iterationCount 
       c = color(255 - iterationCount * 7, iterationCount * 16, iterationCount * 12);
-      pixels[(j * width) + i] = c;
+      fractalPixels[(j * width) + i] = c;
     }
   }
-  
-  // you need to call updatePixels() to display
-  // the colors stored in the pixels[] array.
-  updatePixels();
 }
 
 // method to check if the sequence is bounded. OriginalReal 
@@ -166,7 +192,71 @@ void keyPressed() {
     xmax += xDelta;
     xmin -= xDelta;
   }
+  else if (key == ' ') {
+    // Zoom-out view
+    xmin = -3.2;
+    xmax = 1.6;
+    ymin = -1.35;
+    ymax = 1.35;
+  }
   
-  //Draw the new view
-  draw();
+  fractalViewValid = false;
+}
+
+
+int mouseStartX, mouseStartY, mouseEndX, mouseEndY;
+
+void mousePressed() {
+  mouseStartX = mouseX;
+  mouseStartY = mouseY;
+  mouseEndX = mouseX;
+  mouseEndY = mouseY;
+  drawBox = true;
+
+}
+
+boolean fractalViewValid;
+boolean drawBox;
+
+void mouseDragged() {
+  mouseEndX = mouseX;
+  mouseEndY = mouseY;
+}
+
+void mouseReleased() {
+  drawBox = false;
+  fractalViewValid = false;
+  
+  int boxStartX = min(mouseStartX, mouseEndX);
+  int boxStartY = min(mouseStartY, mouseEndY);
+  int boxEndX = max(mouseStartX, mouseEndX);
+  int boxEndY = max(mouseStartY, mouseEndY);
+  
+  double horizontal = abs((float)boxEndX - (float)boxStartX);
+  double vertical = abs((float)boxEndY - (float)boxStartY);
+  
+  if (horizontal > vertical) {
+    double newVertical = horizontal * 9 / 16;
+    double verticleDiff = (newVertical - vertical) / 2; 
+    boxStartY = boxStartY - (int)verticleDiff; 
+    boxEndY = boxEndY + (int)verticleDiff;
+  }
+  else {
+    double newHorizontal = vertical * 16 / 9;
+    double horizontalDiff = (newHorizontal - horizontal) / 2;
+    boxStartX = boxStartX - (int)horizontalDiff;
+    boxEndX = boxEndX + (int)horizontalDiff;
+  }
+  
+  double xminDelta = boxStartX * dx;
+  double yminDelta = boxStartY * dy;
+  double xmaxDelta = boxEndX * dx;
+  double ymaxDelta = boxEndY * dy;
+  
+  xmax = xmin + xmaxDelta;
+  ymax = ymin + ymaxDelta;
+  xmin = xmin + xminDelta; //<>//
+  ymin = ymin + yminDelta;
+  
+  
 }
