@@ -26,10 +26,10 @@ void setup() {
   
   //initialize physics variables
   len = 200;
-  mass = 10;
+  mass = 20;
   // start with a random angle between 0 and PI
   theta = random(PI);
-  g = 4.1;
+  g = 2.0;
   
   // initialize time step
   h = 0.01;

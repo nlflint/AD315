@@ -32,6 +32,7 @@ float scale;
 void setup() {
   size(640, 640);
   background(0);
+  colorMode(HSB);
   
   // initialize physics variables
   x1 = 0;
@@ -39,9 +40,9 @@ void setup() {
   x2 = 0;
   y2 = 0;
   len1 = 140;
-  len2 = 160;
+  len2 = 80;
   m1 = 8;
-  m2 = 12;
+  m2 = 32;
   
   // initialize test variables
   theta1 = random(0.7,1)*PI;
@@ -66,26 +67,23 @@ void draw() {
   translate(width/2, height/2);
   rotate(HALF_PI);
   
+  float hOver2 = (h/2);
   // implement RK4
   // RK equations for the first DE
-  k11 = 
-  k12 = 
-  k13 = 
-  k14 = 
+  k11 = f1(theta1);
+  k12 = f1(theta1 + (hOver2 * k11));
+  k13 = f1(theta1 + (hOver2 * k12));
+  k14 = f1(theta1 + (h * k13));
   
   // RK equations for the second DE
-  k21 = 
-  k22 = 
-  k23 = 
-  k24 = 
-  
-  // update temporary variables
-  temp1 =
-  temp2 =
+  k21 = f2(theta2);
+  k22 = f2(theta2 + (hOver2 * k21));
+  k23 = f2(theta2 + (hOver2 * k22));
+  k24 = f2(theta2 + (h * k23));
   
   // update angular velocity
-  aVel1 += temp1;
-  aVel2 += temp2;
+  aVel1 += k14 * h;
+  aVel2 += k24 * h;
   
   // update angles
   theta1 += aVel1;
@@ -111,7 +109,8 @@ void draw() {
     if (path[i][0] != 0 && path[i][1] != 0) {
       scale = (pathLength - (float) i) / pathLength;
       noStroke();
-      fill(scale*255, 64);
+      int rainbowColors = color(scale*255,255,255);
+      fill(rainbowColors);
       ellipse(path[i][0], path[i][1], 2*m2*scale, 2*m2*scale);
     }
   }
