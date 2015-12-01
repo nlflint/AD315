@@ -49,7 +49,7 @@ void draw() {
   
   // implement your second order RK here
   k1 = f(theta);
-  k2 = f(theta + ((h / 2) * k1));
+  k2 = f(theta + (h * k1));
   
   aVel += k2 * h;
   
